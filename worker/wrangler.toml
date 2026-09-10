@@ -1,0 +1,27 @@
+name = "prepforge-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+
+# Create this once with: npx wrangler kv namespace create SESSIONS
+# then paste the id it prints below.
+kv_namespaces = [
+  { binding = "SESSIONS", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+]
+
+[vars]
+# Restrict which frontend origin may call this worker. Set to your actual
+# GitHub Pages origin once deployed, e.g. "https://yourname.github.io".
+ALLOWED_ORIGIN = "*"
+
+# How many *sessions* (not individual calls) each visitor can start per day.
+# One session — warm-up + syllabus + a normal back-and-forth — runs roughly
+# 15-25 model calls, so this is checked once per session, not per call.
+DAILY_SESSIONS_PER_IP = "3"
+
+# Groq is free with no credit card and no trial-credit expiry — see
+# https://console.groq.com/docs/models for the current model list.
+# Llama 3.3 70B is a good default: strong quality, generous free-tier limits.
+GROQ_MODEL = "llama-3.3-70b-versatile"
+
+# Secret — set with: wrangler secret put GROQ_API_KEY
+# Get a free key at https://console.groq.com/keys (no card required).
