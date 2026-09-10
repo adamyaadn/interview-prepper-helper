@@ -5,7 +5,7 @@ compatibility_date = "2024-09-01"
 # Create this once with: npx wrangler kv namespace create SESSIONS
 # then paste the id it prints below.
 kv_namespaces = [
-  { binding = "SESSIONS", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+  { binding = "SESSIONS", id = "c81fa445b9a848f8ba33304f3d9519e6" }
 ]
 
 [vars]
