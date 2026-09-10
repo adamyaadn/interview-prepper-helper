@@ -21,7 +21,7 @@ DAILY_SESSIONS_PER_IP = "3"
 # Groq is free with no credit card and no trial-credit expiry — see
 # https://console.groq.com/docs/models for the current model list.
 # Llama 3.3 70B is a good default: strong quality, generous free-tier limits.
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 
 # Secret — set with: wrangler secret put GROQ_API_KEY
 # Get a free key at https://console.groq.com/keys (no card required).
