@@ -16,7 +16,7 @@ ALLOWED_ORIGIN = "*"
 # How many *sessions* (not individual calls) each visitor can start per day.
 # One session — warm-up + syllabus + a normal back-and-forth — runs roughly
 # 15-25 model calls, so this is checked once per session, not per call.
-DAILY_SESSIONS_PER_IP = "3"
+DAILY_SESSIONS_PER_IP = "50"
 
 # Groq is free with no credit card and no trial-credit expiry — see
 # https://console.groq.com/docs/models for the current model list.
