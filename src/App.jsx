@@ -10,7 +10,8 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <span className="brand">PrepForge</span>
+        <span className="brand-small">Interview</span>
+        <span className="brand-big">Prepper Helper</span>
         <span className="brand-sub">interview prep, on your terms</span>
       </header>
 
@@ -27,6 +28,8 @@ export default function App() {
           </aside>
         )}
       </main>
+
+      <footer className="app-footer">Made with {'<3'} by A❉</footer>
     </div>
   )
 }
