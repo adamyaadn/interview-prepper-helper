@@ -14,6 +14,7 @@ export default function Diagnostic() {
   const [ratings, setRatings] = useState({})
   const [errorMsg, setErrorMsg] = useState('')
   const [tieOptions, setTieOptions] = useState(null)
+  const [revealed, setRevealed] = useState({})
 
   useEffect(() => {
     let cancelled = false
@@ -139,6 +140,17 @@ export default function Diagnostic() {
               </button>
             ))}
           </div>
+          <button
+            className="see-answer-btn"
+            onClick={() => setRevealed((prev) => ({ ...prev, [i]: !prev[i] }))}
+          >
+            {revealed[i] ? 'Hide answer' : 'See answer 💖'}
+          </button>
+          {revealed[i] && (
+            <div className="answer-reveal">
+              {(q.rubric_hint || []).map((point, j) => <div key={j}>• {point}</div>)}
+            </div>
+          )}
         </div>
       ))}
 
