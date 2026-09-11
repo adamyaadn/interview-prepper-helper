@@ -1,4 +1,4 @@
-import { buildDiagnosticPrompt, buildScoringPrompt, buildSyllabusPrompt, buildTurnPrompt } from './prompts'
+import { buildDiagnosticPrompt, buildScoringPrompt, buildSyllabusPrompt, buildTurnPrompt, buildAnswerRevealPrompt } from './prompts'
 
 // Set at build time (see .github/workflows/deploy.yml) — points at your
 // deployed Cloudflare Worker. Falls back to localhost for `npm run dev`
@@ -60,4 +60,9 @@ export async function generateSyllabus({ topic, difficulty, companies, icLevel, 
 export async function generateTurn({ topic, subtopic, archetype, difficulty, companies, icLevel, avoidText, paceInstruction, history }) {
   const { system, user } = buildTurnPrompt({ topic, subtopic, archetype, difficulty, companies, icLevel, avoidText, paceInstruction, history })
   return complete({ system, user, temperature: 0.95 })
+}
+
+export async function generateAnswerReveal({ topic, subtopic, question, difficulty, icLevel }) {
+  const { system, user } = buildAnswerRevealPrompt({ topic, subtopic, question, difficulty, icLevel })
+  return complete({ system, user, temperature: 0.5 })
 }
