@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSession } from '../state/SessionContext'
-import { generateSyllabus, generateTurn } from '../lib/llm'
+import { generateSyllabus, generateTurn, generateAnswerReveal } from '../lib/llm'
 import { getFingerprints, addFingerprint, formatForPrompt } from '../lib/fingerprints'
 import { ARCHETYPES, DIFFICULTY_TIERS } from '../constants'
 
@@ -13,6 +13,8 @@ export default function TopicSession() {
   const [draft, setDraft] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [revealed, setRevealed] = useState({})
+  const [revealing, setRevealing] = useState(null)
   const scrollRef = useRef(null)
 
   const companies = DIFFICULTY_TIERS[difficulty].companies
@@ -89,6 +91,19 @@ export default function TopicSession() {
     runTurn({ paceInstruction: 'Speed round — ask a short, rapid-fire question in one or two sentences.' })
   }
 
+  async function revealAnswer(i, questionText) {
+    setRevealing(i)
+    try {
+      const subtopic = syllabus?.subtopics[subtopicIndex]?.name || topic
+      const text = await generateAnswerReveal({ topic, subtopic, question: questionText, difficulty, icLevel })
+      setRevealed((prev) => ({ ...prev, [i]: text }))
+    } catch (err) {
+      setRevealed((prev) => ({ ...prev, [i]: `Couldn't load an answer: ${err.message}` }))
+    } finally {
+      setRevealing(null)
+    }
+  }
+
   return (
     <div className="card session-card">
       <div className="session-head">
@@ -103,7 +118,21 @@ export default function TopicSession() {
 
       <div className="transcript" ref={scrollRef}>
         {transcript.map((turn, i) => (
-          <div key={i} className={`bubble ${turn.role}`}>{turn.content}</div>
+          <div key={i}>
+            <div className={`bubble ${turn.role}`}>{turn.content}</div>
+            {turn.role === 'assistant' && (
+              <>
+                <button
+                  className="see-answer-btn"
+                  onClick={() => revealed[i] ? setRevealed((p) => { const n = { ...p }; delete n[i]; return n }) : revealAnswer(i, turn.content)}
+                  disabled={revealing === i}
+                >
+                  {revealing === i ? 'Loading...' : revealed[i] ? 'Hide answer' : 'See answer 💖'}
+                </button>
+                {revealed[i] && <div className="answer-reveal">{revealed[i]}</div>}
+              </>
+            )}
+          </div>
         ))}
         {loading && <div className="bubble assistant loading">Thinking...</div>}
       </div>
