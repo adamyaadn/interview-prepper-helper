@@ -76,3 +76,16 @@ Continue the session: if the candidate just answered, respond briefly and genero
 
   return { system, user }
 }
+
+export function buildAnswerRevealPrompt({ topic, subtopic, question, difficulty, icLevel }) {
+  const system = `You give concise, generous model answers for interview-prep questions. You're not grading — you're showing what a strong response might cover, so the person can compare notes with their own attempt. Keep it to 3-5 short bullet points, no preamble, no "Here's the answer" framing — just the points themselves as plain text with a leading dash on each line.`
+
+  const user = `Topic: ${topic} (${subtopic}). Level: ${icLevel}, ${difficulty} difficulty.
+
+The question just asked was:
+${question}
+
+Give 3-5 bullet points covering what a strong answer would touch on.`
+
+  return { system, user }
+}
