@@ -10,12 +10,14 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <span className="brand-small">Interview</span>
-        <span className="brand-big">Prepper Helper</span>
+        <div className="brand-block">
+          <span className="brand-small">Interview</span>
+          <span className="brand-big">Prepper Helper</span>
+        </div>
         <span className="brand-sub">interview prep, on your terms</span>
       </header>
 
-      <main className="app-main">
+      <main className={`app-main ${phase !== 'setup' ? 'has-panel' : ''}`}>
         <section className="content-col">
           {phase === 'setup' && <Setup />}
           {phase === 'diagnostic' && <Diagnostic />}
