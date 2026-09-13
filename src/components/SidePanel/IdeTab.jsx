@@ -2,9 +2,10 @@ import { useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
+import { java } from '@codemirror/lang-java'
 import { oneDark } from '@codemirror/theme-one-dark'
 
-const LANGS = { javascript: javascript(), python: python() }
+const LANGS = { javascript: javascript(), python: python(), java: java() }
 
 export default function IdeTab() {
   const [lang, setLang] = useState('javascript')
@@ -27,6 +28,7 @@ export default function IdeTab() {
         <select value={lang} onChange={(e) => setLang(e.target.value)}>
           <option value="javascript">JavaScript</option>
           <option value="python">Python</option>
+          <option value="java">Java</option>
         </select>
         <button className="copy-btn" onClick={copyCode}>{copied ? 'Copied! 💖' : 'Copy'}</button>
       </div>
