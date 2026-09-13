@@ -1,4 +1,4 @@
-# PrepForge
+# Interview Prepper Helper
 
 Interactive interview prep, hosted for $0 — and now running on genuinely
 free AI models. A static frontend on GitHub Pages talks to a Cloudflare
