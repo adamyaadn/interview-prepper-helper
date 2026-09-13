@@ -10,10 +10,10 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div className="brand-block">
+        <button className="brand-block brand-btn" onClick={() => setPhase('setup')} aria-label="Back to home">
           <span className="brand-small">Interview</span>
           <span className="brand-big">Prepper Helper</span>
-        </div>
+        </button>
         <span className="brand-sub">interview prep, on your terms</span>
       </header>
 
