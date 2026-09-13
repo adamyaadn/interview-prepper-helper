@@ -3,6 +3,7 @@ import { useSession } from '../state/SessionContext'
 import { generateSyllabus, generateTurn, generateAnswerReveal } from '../lib/llm'
 import { getFingerprints, addFingerprint, formatForPrompt } from '../lib/fingerprints'
 import { ARCHETYPES, DIFFICULTY_TIERS } from '../constants'
+import Markdown from './Markdown'
 
 export default function TopicSession() {
   const { difficulty, icLevel, longTermMemory, topic, setPhase } = useSession()
@@ -119,7 +120,7 @@ export default function TopicSession() {
       <div className="transcript" ref={scrollRef}>
         {transcript.map((turn, i) => (
           <div key={i}>
-            <div className={`bubble ${turn.role}`}>{turn.content}</div>
+            <div className={`bubble ${turn.role}`}><Markdown>{turn.content}</Markdown></div>
             {turn.role === 'assistant' && (
               <>
                 <button
@@ -129,7 +130,7 @@ export default function TopicSession() {
                 >
                   {revealing === i ? 'Loading...' : revealed[i] ? 'Hide answer' : 'See answer 💖'}
                 </button>
-                {revealed[i] && <div className="answer-reveal">{revealed[i]}</div>}
+                {revealed[i] && <div className="answer-reveal"><Markdown>{revealed[i]}</Markdown></div>}
               </>
             )}
           </div>
