@@ -3,6 +3,7 @@ import { useSession } from '../state/SessionContext'
 import { generateDiagnostic, scoreAnswers } from '../lib/llm'
 import { getFingerprints, addFingerprint, formatForPrompt } from '../lib/fingerprints'
 import { DIFFICULTY_TIERS } from '../constants'
+import Markdown from './Markdown'
 
 const RATING_LABELS = ['skip', 'meh', 'into it', 'hooked']
 
@@ -122,7 +123,7 @@ export default function Diagnostic() {
       {!tieOptions && questions.map((q, i) => (
         <div key={i} className="question-card">
           <span className="pill">{q.topic}</span>
-          <p>{q.prompt}</p>
+          <Markdown>{q.prompt}</Markdown>
           <textarea
             rows={3}
             value={answers[i] || ''}
