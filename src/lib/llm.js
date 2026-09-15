@@ -39,22 +39,36 @@ async function complete({ system, user, temperature }) {
   return data.text
 }
 
+// The model occasionally returns JSON with a small syntax slip — a missing
+// comma, an odd escape — especially at the higher temperatures we use for
+// variety. Rather than surface that as an error, just ask again a couple of
+// times; a fresh generation almost always comes back clean.
+async function completeJson({ system, user, temperature, retries = 2 }) {
+  let lastErr
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const raw = await complete({ system, user, temperature })
+      return parseJson(raw)
+    } catch (err) {
+      lastErr = err
+    }
+  }
+  throw lastErr
+}
+
 export async function generateDiagnostic({ difficulty, companies, icLevel, avoidText }) {
   const { system, user } = buildDiagnosticPrompt({ difficulty, companies, icLevel, avoidText })
-  const raw = await complete({ system, user, temperature: 1.0 })
-  return parseJson(raw)
+  return completeJson({ system, user, temperature: 1.0 })
 }
 
 export async function scoreAnswers({ qaPairs }) {
   const { system, user } = buildScoringPrompt({ qaPairs })
-  const raw = await complete({ system, user, temperature: 0.2 })
-  return parseJson(raw)
+  return completeJson({ system, user, temperature: 0.2 })
 }
 
 export async function generateSyllabus({ topic, difficulty, companies, icLevel, avoidText }) {
   const { system, user } = buildSyllabusPrompt({ topic, difficulty, companies, icLevel, avoidText })
-  const raw = await complete({ system, user, temperature: 0.85 })
-  return parseJson(raw)
+  return completeJson({ system, user, temperature: 0.85 })
 }
 
 export async function generateTurn({ topic, subtopic, archetype, difficulty, companies, icLevel, avoidText, paceInstruction, history }) {
