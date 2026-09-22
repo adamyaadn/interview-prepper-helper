@@ -59,14 +59,14 @@ Include 3-5 subtopics, ordered from foundational to advanced.`
 
 export function buildTurnPrompt({ topic, subtopic, archetype, difficulty, companies, icLevel, avoidText, paceInstruction, history }) {
   const archetypeDef = ARCHETYPES.find((a) => a.id === archetype) || ARCHETYPES[0]
-  const isFirstTurn = history.length === 0
+  const lastEntry = history[history.length - 1]
+  const hasFreshAnswer = Boolean(lastEntry && lastEntry.role === 'user')
 
   const system = `You are running a live, interactive interview-prep session on "${topic}" (currently focused on "${subtopic}") for an ${icLevel} candidate targeting ${difficulty}-tier companies (examples: ${companies.join(', ')}). Talk like a real interviewer in a real back-and-forth conversation — one exchange at a time.
 
 Hard rules:
 - Ask exactly ONE question per response. Never bundle a second question, a second scenario, or a "let's also try..." into the same message.
-- Never invent, assume, or respond to something the candidate hasn't actually said. If there's no candidate message yet, just ask your question directly — no "assume you've just answered" framing, no fictional prior exchange.
-- Only react to the candidate's last message if one actually exists in the conversation below.
+- Never invent, assume, or respond to something the candidate hasn't actually said. Only react to their last message if the conversation below shows one from them — check who actually spoke last before deciding whether to "respond."
 - Plain conversational prose. Markdown is fine (bold, code, etc.) but keep it light — this is spoken dialogue, not a document.
 - Frame the question in this turn's style: "${archetypeDef.label}."
 - Never ask something resembling these already-covered prompts:
@@ -76,14 +76,24 @@ ${avoidText}`
     ? history.map((turn) => `${turn.role === 'user' ? 'Candidate' : 'Interviewer'}: ${turn.content}`).join('\n')
     : ''
 
-  const user = isFirstTurn
-    ? `${paceInstruction}\n\nThis is the very first message of the session — there's no prior exchange. Just ask your opening question directly, in this turn's style ("${archetypeDef.label}"). Keep it under ~100 words.`
-    : `Conversation so far:
+  let user
+  if (hasFreshAnswer) {
+    user = `Conversation so far:
 ${historyText}
 
 ${paceInstruction}
 
-The candidate's last message is right above. Respond to it briefly and generously — note what was strong — then ask your next question in this turn's style ("${archetypeDef.label}"). Keep your whole response under ~120 words.`
+The candidate's last message is right above (it's from "Candidate:"). Respond to it briefly and generously — note what was strong — then ask your next question in this turn's style ("${archetypeDef.label}"). Keep your whole response under ~120 words.`
+  } else if (history.length) {
+    user = `Conversation so far:
+${historyText}
+
+${paceInstruction}
+
+The candidate hasn't answered the last question — the most recent message above is your own. Don't respond to it, don't summarize it, don't pretend they said something. Just ask your next question directly, in this turn's style ("${archetypeDef.label}"). Keep it under ~100 words.`
+  } else {
+    user = `${paceInstruction}\n\nThis is the very first message of the session — there's no prior exchange. Just ask your opening question directly, in this turn's style ("${archetypeDef.label}"). Keep it under ~100 words.`
+  }
 
   return { system, user }
 }
