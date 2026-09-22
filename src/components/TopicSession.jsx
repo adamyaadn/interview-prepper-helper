@@ -5,6 +5,8 @@ import { getFingerprints, addFingerprint, formatForPrompt } from '../lib/fingerp
 import { ARCHETYPES, DIFFICULTY_TIERS } from '../constants'
 import Markdown from './Markdown'
 
+const MAX_HISTORY_TURNS = 6 // last ~3 exchanges — keeps the prompt bounded regardless of session length
+
 export default function TopicSession() {
   const { difficulty, icLevel, longTermMemory, topic, setPhase } = useSession()
   const [syllabus, setSyllabus] = useState(null)
@@ -58,7 +60,7 @@ export default function TopicSession() {
     try {
       const reply = await generateTurn({
         topic, subtopic, archetype, difficulty, companies, icLevel,
-        avoidText, paceInstruction: paceInstruction || 'Continue naturally.', history,
+        avoidText, paceInstruction: paceInstruction || 'Continue naturally.', history: history.slice(-MAX_HISTORY_TURNS),
       })
       setTranscript([...history, { role: 'assistant', content: reply }])
       addFingerprint({ topic, subtopic, gist: reply.slice(0, 80) }, longTermMemory)
