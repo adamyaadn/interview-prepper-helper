@@ -10,7 +10,7 @@
 //                            many calls as it needs; Groq's own 30 req/min,
 //                            14,400 req/day limits are the natural backstop.
 
-const MAX_PROMPT_CHARS = 6000
+const MAX_PROMPT_CHARS = 9000
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
 export default {
